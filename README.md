@@ -1,25 +1,32 @@
+## Деплой
+
+Тестовое задание доступно по адресу: https://django-stripe-test-qxz7.onrender.com
+Админ панель: https://django-stripe-test-qxz7.onrender.com/admin
+Логин и пароль: admin admin
+
 ## Структура проекта
 
 ```
 stripe_project/
 ├── manage.py                 # Django управляющий скрипт
 ├── requirements.txt          # Python зависимости
-├── Dockerfile               # Docker конфигурация
-├── docker-compose.yml       # Docker Compose настройки
-├── db.sqlite3              # База данных SQLite
-├── stripe_project/         # Основной проект
-│   ├── settings.py         # Настройки Django
-│   ├── urls.py            # URL маршруты
-│   └── wsgi.py            # WSGI конфигурация
-├── payments/              # Приложение платежей
-│   ├── models.py          # Модели данных
-│   ├── views.py           # Представления
-│   ├── urls.py            # URL маршруты приложения
-│   ├── templates/         # HTML шаблоны
-│   └── migrations/        # Миграции базы данных
-└── static/               # Статические файлы
+├── .env                      # Переменные окружения (включён в репозиторий)
+├── Dockerfile                # Docker конфигурация
+├── docker-compose.yml        # Docker Compose настройки
+├── db.sqlite3                # База данных SQLite
+├── stripe_project/           # Основной проект
+│   ├── settings.py           # Настройки Django
+│   ├── urls.py               # URL маршруты
+│   └── wsgi.py               # WSGI конфигурация
+├── payments/                 # Приложение платежей
+│   ├── models.py             # Модели данных
+│   ├── views.py              # Представления
+│   ├── urls.py               # URL маршруты приложения
+│   ├── templates/            # HTML шаблоны
+│   └── migrations/           # Миграции базы данных
+└── static/                   # Статические файлы
     └── css/
-        └── style.css     # Стили
+        └── style.css         # Стили
 ```
 
 ## Модели данных
@@ -35,14 +42,13 @@ stripe_project/
 ### Предварительные требования
 
 - Python 3.8+
-- pip
 - Аккаунт Stripe с API ключами
 - Docker (опционально)
 
 ### 1. Клонирование репозитория
 
 ```bash
-git clone <url-репозитория>
+git clone https://github.com/kitaychyo/django-stripe-test.git
 cd stripe_project
 ```
 

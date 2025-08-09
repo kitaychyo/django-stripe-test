@@ -21,7 +21,7 @@
         {% if order.tax %}
             <p>Tax: {{ order.tax.percentage }}%</p>
         {% endif %}
-        <p><a href="{% url 'order_detail' order.id %}">View Order Details</a></p>
+
     {% else %}
         <p>Thank you for your purchase!</p>
     {% endif %}

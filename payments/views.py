@@ -16,7 +16,8 @@ def buy_item(request, item_id):
     try:
         # Создаём заказ для одиночного товара
         order = Order.objects.create()
-        order.items.add(item)
+        # Создаём OrderItem вместо прямого добавления в items
+        OrderItem.objects.create(order=order, item=item, quantity=1)
         session = stripe.checkout.Session.create(
             payment_method_types=['card'],
             line_items=[{
@@ -47,12 +48,12 @@ def buy_order(request, order_id):
             'price_data': {
                 'currency': order.get_currency(),
                 'product_data': {
-                    'name': item.name,
+                    'name': order_item.item.name,  # Обращаемся к Item через OrderItem
                 },
-                'unit_amount': int(item.price * 100),
+                'unit_amount': int(order_item.item.price * 100),  # Цена из Item
             },
-            'quantity': 1,
-        } for item in order.items.all()]
+            'quantity': order_item.quantity,  # Количество из OrderItem
+        } for order_item in order.order_items.all()]  # Используем order_items
 
         session_params = {
             'payment_method_types': ['card'],
