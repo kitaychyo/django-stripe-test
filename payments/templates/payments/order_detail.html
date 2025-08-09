@@ -22,6 +22,7 @@
     {% endif %}
     <button onclick="buyOrder()">Buy</button>
 
+    <a href="{% url 'home' %}">Back to Home</a>
     <script>
         const stripe = Stripe('{{ stripe_public_key }}');
         function buyOrder() {

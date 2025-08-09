@@ -1,7 +1,7 @@
 import stripe
 from django.conf import settings
 from django.http import JsonResponse, Http404
-from django.shortcuts import render, get_object_or_404
+from django.shortcuts import render, get_object_or_404, redirect
 from .models import Item, Order, Discount, Tax
 
 def get_stripe_key(currency):
@@ -32,7 +32,7 @@ def buy_item(request, item_id):
             mode='payment',
             success_url=f'{request.scheme}://{request.get_host()}/success/?order_id={order.id}',
             cancel_url=f'{request.scheme}://{request.get_host()}/cancel/',
-            metadata={'order_id': order.id},  # Сохраняем order_id для последующей обработки
+            metadata={'order_id': order.id},
         )
         return JsonResponse({'sessionId': session.id, 'publicKey': stripe_public_key})
     except Exception as e:
@@ -76,8 +76,22 @@ def buy_order(request, order_id):
 
 def item_detail(request, item_id):
     item = get_object_or_404(Item, id=item_id)
+    orders = Order.objects.all()  # Передаём список заказов для выбора
     _, stripe_public_key = get_stripe_key(item.currency)
-    return render(request, 'payments/item_detail.html', {'item': item, 'stripe_public_key': stripe_public_key})
+    return render(request, 'payments/item_detail.html', {'item': item, 'stripe_public_key': stripe_public_key, 'orders': orders})
+
+def add_to_order(request, item_id):
+    if request.method == 'POST':
+        item = get_object_or_404(Item, id=item_id)
+        order_id = request.POST.get('order_id')
+        if order_id == 'new':
+            order = Order.objects.create()
+        else:
+            order = get_object_or_404(Order, id=order_id)
+        order.items.add(item)
+        order.save()
+        return redirect('order_detail', order_id=order.id)
+    return redirect('item_detail', item_id=item_id)
 
 def order_detail(request, order_id):
     order = get_object_or_404(Order, id=order_id)

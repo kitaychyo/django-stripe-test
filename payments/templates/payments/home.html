@@ -2,34 +2,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Home</title>
+    <title>Django + Stripe Demo</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <h1>Welcome to the Stripe Demo</h1>
+    <h1>Django + Stripe Payment Demo</h1>
 
     <h2>Items</h2>
     {% if items %}
         <ul>
-        {% for item in items %}
-            <li><a href="{% url 'item_detail' item.id %}">{{ item.name }} ({{ item.price }} {{ item.currency|upper }})</a></li>
-        {% endfor %}
+            {% for item in items %}
+                <li>
+                    <a href="{% url 'item_detail' item.id %}">{{ item.name }}</a> - {{ item.price }} {{ item.currency }}
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
-        <p>No items available.</p>
+        <p>No items available. Add some in the <a href="{% url 'admin:index' %}">admin panel</a>.</p>
     {% endif %}
 
     <h2>Orders</h2>
     {% if orders %}
         <ul>
-        {% for order in orders %}
-            <li><a href="{% url 'order_detail' order.id %}">Order {{ order.id }} (Total: {{ order.get_total_price }} {{ order.get_currency|upper }})</a></li>
-        {% endfor %}
+            {% for order in orders %}
+                <li>
+                    <a href="{% url 'order_detail' order.id %}">Order #{{ order.id }}</a> - Total: {{ order.get_total_price }} {{ order.get_currency }}
+                </li>
+            {% endfor %}
         </ul>
     {% else %}
-        <p>No orders available.</p>
+        <p>No orders available. Add some in the <a href="{% url 'admin:index' %}">admin panel</a>.</p>
     {% endif %}
 
-    <p><a href="/admin/">Go to Admin Panel</a></p>
+    <p><a href="{% url 'admin:index' %}">Go to Admin Panel</a></p>
 </body>
 </html>
