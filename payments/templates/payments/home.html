@@ -1,0 +1,35 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Home</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <h1>Welcome to the Stripe Demo</h1>
+
+    <h2>Items</h2>
+    {% if items %}
+        <ul>
+        {% for item in items %}
+            <li><a href="{% url 'item_detail' item.id %}">{{ item.name }} ({{ item.price }} {{ item.currency|upper }})</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No items available.</p>
+    {% endif %}
+
+    <h2>Orders</h2>
+    {% if orders %}
+        <ul>
+        {% for order in orders %}
+            <li><a href="{% url 'order_detail' order.id %}">Order {{ order.id }} (Total: {{ order.get_total_price }} {{ order.get_currency|upper }})</a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No orders available.</p>
+    {% endif %}
+
+    <p><a href="/admin/">Go to Admin Panel</a></p>
+</body>
+</html>
