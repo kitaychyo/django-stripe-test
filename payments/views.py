@@ -2,7 +2,7 @@ import stripe
 from django.conf import settings
 from django.http import JsonResponse, Http404
 from django.shortcuts import render, get_object_or_404, redirect
-from .models import Item, Order, Discount, Tax
+from .models import Item, Order, OrderItem, Discount, Tax
 
 def get_stripe_key(currency):
     if currency == 'eur':
@@ -88,8 +88,18 @@ def add_to_order(request, item_id):
             order = Order.objects.create()
         else:
             order = get_object_or_404(Order, id=order_id)
-        order.items.add(item)
-        order.save()
+
+        # Проверяем, есть ли уже этот Item в заказе
+        order_item, created = OrderItem.objects.get_or_create(
+            order=order,
+            item=item,
+            defaults={'quantity': 1}
+        )
+        if not created:
+            # Если Item уже есть, увеличиваем количество
+            order_item.quantity += 1
+            order_item.save()
+
         return redirect('order_detail', order_id=order.id)
     return redirect('item_detail', item_id=item_id)
 

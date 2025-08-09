@@ -47,12 +47,11 @@ class Tax(models.Model):
         return f"{self.percentage}%"
 
 class Order(models.Model):
-    items = models.ManyToManyField(Item)
     discount = models.ForeignKey(Discount, on_delete=models.SET_NULL, null=True, blank=True)
     tax = models.ForeignKey(Tax, on_delete=models.SET_NULL, null=True, blank=True)
 
     def get_total_price(self):
-        total = sum(item.price for item in self.items.all())
+        total = sum(item.get_subtotal() for item in self.order_items.all())
         if self.discount:
             total -= total * (self.discount.percentage / 100)
         if self.tax:
@@ -60,7 +59,18 @@ class Order(models.Model):
         return round(total, 2)
 
     def get_currency(self):
-        return self.items.first().currency if self.items.exists() else 'USD'
+        return self.order_items.first().item.currency if self.order_items.exists() else 'USD'
 
     def __str__(self):
         return f"Order {self.id}"
+
+class OrderItem(models.Model):
+    order = models.ForeignKey(Order, related_name='order_items', on_delete=models.CASCADE)
+    item = models.ForeignKey(Item, on_delete=models.CASCADE)
+    quantity = models.PositiveIntegerField(default=1)
+
+    def get_subtotal(self):
+        return self.item.price * self.quantity
+
+    def __str__(self):
+        return f"{self.quantity} x {self.item} in Order {self.order.id}"

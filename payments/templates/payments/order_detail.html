@@ -8,12 +8,16 @@
 </head>
 <body>
     <h1>Order {{ order.id }}</h1>
-    <ul>
-        {% for item in order.items.all %}
-            <li>{{ item.name }} - {{ item.price }} {{ item.currency|upper }}</li>
+    {% if order.order_items.exists %}
+        <ul>
+        {% for order_item in order.order_items.all %}
+            <li>{{ order_item.quantity }} x {{ order_item.item.name }} - {{ order_item.get_subtotal }} {{ order.get_currency|upper }}</li>
         {% endfor %}
-    </ul>
-    <p>Total: {{ order.get_total_price }} {{ order.get_currency|upper }}</p>
+        </ul>
+    {% else %}
+        <p>No items in this order.</p>
+    {% endif %}
+    <p><strong>Total:</strong> {{ order.get_total_price }} {{ order.get_currency|upper }}</p>
     {% if order.discount %}
         <p>Discount: {{ order.discount.percentage }}%</p>
     {% endif %}
