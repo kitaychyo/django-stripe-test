@@ -29,7 +29,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://*.onrender.com',
+    f'https://{os.environ.get("RENDER_EXTERNAL_HOSTNAME")}',
+]
 # Application definition
 
 INSTALLED_APPS = [
